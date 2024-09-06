@@ -13,14 +13,14 @@
     {{ block.super }}
     <link rel="stylesheet" href="{% static "oscar/js/select2/select2.min.css" %}" />
     <link rel="stylesheet" href="{% static "oscar/css/select2-bootstrap.min.css" %}" />
-    <!-- <link rel="stylesheet" href="{% static "oscar/js/bootstrap4-datetimepicker/tempusdominus-bootstrap-4.min.css" %}" /> -->
+    <link rel="stylesheet" href="{% static "oscar/js/bootstrap4-datetimepicker/tempusdominus-bootstrap-4.min.css" %}" />
     <!-- Libraries Stylesheet -->
     <link rel="stylesheet" href="{% static 'lib/animate/animate.min.css' %}"/>
     <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
     <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"> -->
 {% endblock %}
 
 {% block title %}
@@ -30,7 +30,7 @@
 {% block layout %}
     {% block navbar %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-accounts">
-            <a class="navbar-brand" href="#">{{ shop_name }}</a>
+            <p class="navbar-brandy h3 px-3 text-light mt-1">Mega Family Choice</p>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top_nav_bar" aria-controls="top_nav_bar" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
@@ -44,13 +44,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ homepage_url }}"><i class="fas fa-store"></i> {% trans "Return to site" %}</a>
+                        <a class="nav-link" href="{{ homepage_url }}"><i class="fas fa-store"></i> {% trans "Store" %}</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'customer:summary' %}"><i class="fas fa-user"></i> {% trans "Account" %}</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard:logout' %}"><i class="fas fa-sign-out-alt"></i> {% trans "Log out" %}</a>
+                    <a class="nav-link" href="{% url 'dashboard:logout' %}"><i class="fas fa-power-off"></i> {% trans "Log out" %}</a>
                   </li>
                 </ul>
           </div>

@@ -54,7 +54,7 @@
                 {% blocktrans with name=object.name %}Delete Option <strong>{{ name }}</strong> - are you sure?{% endblocktrans %}
             </p>
             <div class="form-actions">
-                <a href="{% url 'dashboard:catalogue-option-list' %}">
+                <a class="btn btn-primary" href="{% url 'dashboard:catalogue-option-list' %}">
                     {% trans "Cancel" %}
                 </a>
                 <button type="submit" class="btn btn-danger" data-loading-text="{% trans 'Deleting...' %}">

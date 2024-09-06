@@ -82,7 +82,7 @@
             <div class="fixed-actions-group">
                 <div class="form-actions">
                     <div class="float-right">
-                        <a href="#" {% if not is_popup %}onclick="window.history.go(-1);return false"{% else %}onclick="window.close();return false;"{% endif %}>
+                        <a class="btn btn-danger" href="#" {% if not is_popup %}onclick="window.history.go(-1);return false"{% else %}onclick="window.close();return false;"{% endif %}>
                             {% trans "Cancel" %}
                         </a>
                         {% trans "or" %}

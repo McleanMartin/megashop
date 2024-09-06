@@ -1,0 +1,39 @@
+{% extends "oscar/layout.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Login or register' %} | {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb py-3 bg-light px-2">
+            <li class="breadcrumb-item">
+                <a href="{{ homepage_url }}">{% trans 'Shop' %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Login' %}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center vh-50">
+        <div class="col-sm-6">
+            <form id="login_form" action="{{ request.get_full_path }}" method="post" class="card card-body bg-light">
+                <h2 class="text-center">{% trans 'Log In' %}</h2>
+                {% csrf_token %}
+                {% include "oscar/partials/form_fields.html" with form=login_form %}
+                <p class="">
+                    <a href="{% url 'password-reset' %}">{% trans "I've forgotten my password" %}</a>
+                </p>
+                
+                <button name="login_submit" type="submit" value="Log In" class="btn btn-lg btn-primary btn-block" data-loading-text="{% trans "Logging in..." %}">{% trans 'Log In' %}</button>
+                <p class="text-center">
+                    <a href="{% url 'core:register' %}">{% trans "Create  Account" %}</a>
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,80 @@
+{% load i18n %}
+{% load currency_filters %}
+{% load category_tags %}
+
+
+<!-- Navbar & Hero Start -->
+<div class="container-fluid position-relative p-0">
+    <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+        <a href="" class="navbar-brand p-0">
+            <h3 class="text-primary"><i class="me-3"></i>Mega Family Choice</h3>
+            <!-- <img src="img/logo.png" alt="Logo"> -->
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link" data-bs-toggle="dropdown">
+                        <span class="dropdown-toggle">Shop</span>
+                    </a>
+                    <div class="dropdown-menu m-1">
+                        {% category_tree depth=1 as tree_categories %}
+                        <a class="dropdown-item" href="{% url 'catalogue:index' %}">{% trans "All products" %}</a>
+                        {% if tree_categories %}
+                            <div class="dropdown-divider"></div>
+                            {% for tree_category in tree_categories %}
+                                <a class="dropdown-item" href="{{ tree_category.get_absolute_url }}">{{ tree_category.name }}</a>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% block nav_dropdown_extra_items %}
+                            <a class="dropdown-item" href="{% url 'offer:list' %}">{% trans "Offers" %}</a>
+                        {% endblock %}
+                    </div>
+                </div>
+                <a href="about.html" class="nav-item nav-link">About</a>
+                <a href="contact.html" class="nav-item nav-link">Contact Us</a>
+            </div>
+            <div class="navbar-nav ms-auto py-2">
+                {% if user.is_authenticated %}
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link" data-bs-toggle="dropdown">
+                            <span class="dropdown-toggle">My Account</span>
+                        </a>
+                        <div class="dropdown-menu m-1">
+                            <a href="{% url 'customer:summary' %}" class="dropdown-item"><i class="fas fa-user-alt me-2"></i>Profile</a>
+                            {% if user.is_staff or perms.partner.dashboard_access %}
+                            <a href="{% url 'dashboard:index' %}" class="dropdown-item"><i class="fas fa-server me-2"></i>Dashboard</a>
+                            {% endif %}
+                            <a href="{% url 'customer:logout' %}" class="dropdown-item"><i class="fas fa-power-off me-2"></i> Log Out</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <a href="{% url 'basket:summary' %}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0"><span class="fas fa-shopping-cart"></span> Cart</a>
+                </div>
+                {% else %}
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <a href="{% url 'customer:login' %}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Signup/Signin</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Start -->
+<div class="container-fluid bg-breadcrumb">
+    <div class="container text-center py-5" style="max-width: 900px;">
+        {% block nav_extra %}
+            <div class="d-flex justify-content-center">
+                {% include "oscar/partials/search.html" %}
+            </div>
+        {% endblock %}
+    </div>
+</div>
+<!-- Header End -->
+</div>
+<!-- Navbar & Hero End -->

@@ -1,0 +1,196 @@
+{% load i18n %}
+{% load image_tags %}
+{% load currency_filters %}
+{% load purchase_info_tags %}
+{% load widget_tweaks %}
+
+<style>
+    .basket-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .basket-table th, .basket-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    .basket-table th {
+        background-color: #f9f9f9;
+        font-weight: bold;
+    }
+    .basket-table img {
+        max-width: 100px;
+        border-radius: 8px;
+    }
+    .price_color {
+        font-weight: bold;
+        color: #ff6f61;
+    }
+    @media (max-width: 768px) {
+        .basket-table thead {
+            display: none;
+        }
+        .basket-table tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .basket-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+        .basket-table td:before {
+            content: attr(data-label);
+            font-weight: bold;
+            margin-right: 10px;
+            flex-basis: 40%;
+        }
+    }
+</style>
+
+{% if basket_warnings %}
+    <h5 class="text-danger">{% trans "Important messages about items in your basket" %}</h5>
+    {% for warning in basket_warnings %}
+        <div class="alert alert-warning">{{ warning }}</div>
+    {% endfor %}
+{% endif %}
+
+{% if upsell_messages %}
+    <div class="card card-body mb-3">
+        <h3 class="h4 text-primary">{% trans "You could be missing out on offers!" %}</h3>
+        {% for upsell in upsell_messages %}
+            {% blocktrans with message=upsell.message url=upsell.offer.get_absolute_url offer_name=upsell.offer.name %}
+                <div class="alert alert-info">{{ message }} to qualify for the <a href="{{ url }}">{{ offer_name }}</a> special offer</div>
+            {% endblocktrans %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if not basket.is_empty %}
+    <table class="basket-table">
+        <thead>
+            <tr>
+                <th>{% trans "Item" %}</th>
+                <th>{% trans "Quantity" %}</th>
+                <th>{% trans "Price" %}</th>
+                <th>{% trans "Total" %}</th>
+                <th>{% trans "Actions" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form method="post" class="basket_summary" id="basket_formset">
+                {% csrf_token %}
+                {{ formset.management_form }}
+
+                {% for form in formset %}
+                    {% with line=form.instance product=form.instance.product %}
+                        {% purchase_info_for_line request line as session %}
+                        <tr>
+                            <td data-label="{% trans 'Item' %}">
+                                <a href="{{ product.get_absolute_url }}">
+                                    {% with image=product.primary_image %}
+                                        {% oscar_thumbnail image.original "100x100" upscale=False as thumb %}
+                                        <img src="{{ thumb.url }}" alt="{{ product.get_title }}"/>
+                                    {% endwith %}
+                                </a>
+                            </td>
+                            <td data-label="{% trans 'Quantity' %}">
+                                <div class="input-group mb-2 {% if form.errors %}is-invalid{% endif %}">
+                                    {% render_field form.quantity class+="form-control" %}
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary" type="submit" data-loading-text="{% trans 'Updating...' %}">{% trans "Update" %}</button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="{% trans 'Price' %}">
+                                <p class="price_color">
+                                    {% if line.is_tax_known %}
+                                        {{ line.unit_price_incl_tax|currency:line.price_currency }}
+                                    {% else %}
+                                        {{ line.unit_price_excl_tax|currency:line.price_currency }}
+                                    {% endif %}
+                                </p>
+                            </td>
+                            <td data-label="{% trans 'Total' %}">
+                                <p class="price_color">
+                                    {% if line.is_tax_known %}
+                                        {{ line.line_price_incl_tax|currency:line.price_currency }}
+                                    {% else %}
+                                        {{ line.line_price_excl_tax|currency:line.price_currency }}
+                                    {% endif %}
+                                </p>
+                            </td>
+                            <td data-label="{% trans 'Actions' %}">
+                                <div class="basket-line-actions">
+                                    <a href="#" data-id="{{ forloop.counter0 }}" data-behaviours="remove" class=" btn btn-sm btn-danger">{% trans "Remove" %}</a>
+                                    {% if user.is_authenticated %}
+                                        | <a class="btn btn-sm btn-primary" href="#" data-id="{{ forloop.counter0 }}" data-behaviours="save">{% trans "Save for later" %}</a>
+                                    {% endif %}
+                                    <div style="display:none">
+                                        {{ form.save_for_later }}
+                                        {{ form.DELETE }}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endwith %}
+                    {% endfor %}
+            </form>
+        </tbody>
+    </table>
+
+    <div class="row">
+        {% block vouchers %}
+            {% if voucher_form %}
+                <div class="col-sm-6 mb-3">
+                    <div class="sub-header">
+                        <h2>{% trans "Voucher/promo code" %}</h2>
+                    </div>
+                    <p id="voucher_form_link"><a href="#voucher" class="btn btn-secondary btn-full">{% trans "I have a voucher code..." %}</a></p>
+
+                    <div id="voucher_form_container" style="display:none">
+                        <form id="voucher_form" action="{% url 'basket:vouchers-add' %}" method="post">
+                            {% csrf_token %}
+                            {% include "oscar/partials/form_fields.html" with form=voucher_form %}
+                            <button type="submit" class="btn btn-info btn-sm" data-loading-text="{% trans 'Adding...' %}">{% trans "Add voucher" %}</button>
+                            | <a class="btn btn-sm btn-danger" href="#" id="voucher_form_cancel">{% trans "cancel" %}</a>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock vouchers %}
+
+        {% block baskettotals %}
+            <div class="col-sm-6 mb-3">
+                {% include 'oscar/basket/partials/basket_totals.html' with editable=1 %}
+            </div>
+        {% endblock baskettotals %}
+    </div>
+
+    {% block formactions %}
+        <div class="form-group clearfix">
+            <div class="row">
+                <div class="col-sm-4 offset-sm-8">
+                    <a href="" class="btn btn-lg btn-primary btn-block">{% trans "Proceed to checkout" %}</a>
+                </div>
+            </div>
+        </div>
+    {% endblock formactions %}
+
+{% else %}
+    {% block emptybasket %}
+        <p class="text-center">
+            <strong>{% trans "Your basket is empty." %}</strong>
+            <br>
+            <a href="{{ homepage_url }}" class="btn btn-success mt-2">{% trans "Continue shopping" %}</a>
+        </p>
+    {% endblock %}
+{% endif %}

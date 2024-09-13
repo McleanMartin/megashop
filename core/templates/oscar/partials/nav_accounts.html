@@ -34,8 +34,8 @@
                         {% endblock %}
                     </div>
                 </div>
-                <a href="about.html" class="nav-item nav-link">About</a>
-                <a href="contact.html" class="nav-item nav-link">Contact Us</a>
+                <a href="{% url "core:about_us" %}" class="nav-item nav-link">About</a>
+                <a href="{% url "core:contact_us" %}" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="navbar-nav ms-auto py-2">
                 {% if user.is_authenticated %}

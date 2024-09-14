@@ -6,20 +6,7 @@
     {{ partner.name }} | {% trans "Partners" %} | {{ block.super }}
 {% endblock %}
 
-{% block breadcrumbs %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:partner-list' %}">{% trans "Partners" %}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ partner.name }}</li>
-        </ol>
-    </nav>
-{% endblock %}
-
-{% block headertext %}{{ partner.name }}{% endblock %}
-
 {% block dashboard_content %}
-
     <div class="row">
         <div class="col-md-12">
             <div class="table-header">
@@ -61,8 +48,8 @@
             <p>{% trans "No users linked." %}</p>
         {% endif %}
         <div class="form-group">
-            <a class="btn btn-info" href="{% url 'dashboard:partner-user-create' partner_pk=partner.pk %}" >{% trans "Link a new user" %}</a>
-            <a class="btn btn-info" href="{% url 'dashboard:partner-user-select' partner_pk=partner.pk %}" >{% trans "Link an existing user" %}</a>
+            <a class="btn btn-info mt-1" href="{% url 'dashboard:partner-user-create' partner_pk=partner.pk %}" >{% trans "Link a new user" %}</a>
+            <a class="btn btn-info mt-1" href="{% url 'dashboard:partner-user-select' partner_pk=partner.pk %}" >{% trans "Link an existing user" %}</a>
         </div>
     </div>
 {% endblock dashboard_content %}

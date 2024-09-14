@@ -7,27 +7,6 @@
     {{ title }} | {% trans "Products" %} | {{ block.super }}
 {% endblock %}
 
-{% block breadcrumbs %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard:catalogue-product-list' %}">{% trans "Products" %}</a>
-            </li>
-            {% if parent %}
-                <li class="breadcrumb-item">
-                    <a href="{% url 'dashboard:catalogue-product' parent.id %}">{{ parent.title }}</a>
-                </li>
-            {% endif %}
-            <li class="breadcrumb-item active" aria-current="page">
-                {{ title }}
-            </li>
-        </ol>
-     </nav>
-{% endblock %}
-
 {% block headertext %}{{ title }}{% endblock %}
 
 {% block dashboard_content %}
@@ -53,9 +32,6 @@
             {% block tab_nav %}
                 <div class="col-md-3">
                     <div class="tab-nav sticky-top">
-                        <div class="table-header">
-                            <h3>{% trans "Sections" %}</h3>
-                        </div>
                         <ul class="nav flex-column bs-docs-sidenav" id="product_update_tabs">
                             {% comment %}
                                 The navigation below is filtered heavily on the product structure.
@@ -65,52 +41,52 @@
                                 only one template block (instead of all affected) has to be altered.
                             {% endcomment %}
                             {% block tabs %}
-                                <li class="nav-item">
+                                <li class="nav-item card">
                                     <a class="nav-link active" href="#product_details" data-toggle="tab">
                                         {% trans 'Product details' %}
                                     </a>
                                 </li>
                                 {% if not parent %}
-                                    <li class="nav-item">
+                                    <li class="nav-item card">
                                         <a class="nav-link" href="#product_category" data-toggle="tab">
                                             {% trans 'Categories' %}
                                         </a>
                                     </li>
                                 {% endif %}
                                 {% if product_class.has_attributes %}
-                                    <li class="nav-item">
+                                    <li class="nav-item card">
                                         <a class="nav-link" href="#product_attributes" data-toggle="tab">
                                             {% trans 'Attributes' %}
                                         </a>
                                     </li>
                                 {% endif %}
-                                <li class="nav-item">
+                                <li class="nav-item card">
                                   <a class="nav-link" href="#product_images" data-toggle="tab">
                                       {% trans 'Images' %}
                                   </a>
                                 </li>
                                 {% if not product.is_parent %}
-                                    <li class="nav-item">
+                                    <li class="nav-item card">
                                         <a class="nav-link" href="#product_stock" data-toggle="tab">
                                             {% trans 'Stock and pricing' %}
                                         </a>
                                     </li>
                                 {% endif %}
                                 {% if user.is_staff and not parent %}
-                                    <li class="nav-item">
+                                    <li class="nav-item card">
                                         <a class="nav-link" href="#child_products" data-toggle="tab">
                                             {% trans 'Variants' %}
                                         </a>
                                     </li>
                                 {% endif %}
                                 {% if not parent %}
-                                    <li class="nav-item">
+                                    <li class="nav-item card">
                                         <a class="nav-link" href="#product_recommended" data-toggle="tab">
                                             {% trans 'Upselling' %}
                                         </a>
                                     </li>
                                 {% endif %}
-                                <li class="nav-item">
+                                <li class="nav-item card">
                                     <a class="nav-link" href="#seo" data-toggle="tab">
                                         {% trans 'Search engine optimisation' %}
                                     </a>

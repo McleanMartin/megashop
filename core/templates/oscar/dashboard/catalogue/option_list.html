@@ -6,14 +6,6 @@
     {% trans "Options" %} | {{ block.super }}
 {% endblock %}
 
-{% block breadcrumbs %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{% trans "Options" %}</li>
-        </ol>
-    </nav>
-{% endblock %}
 
 {% block header %}
     <div class="page-header">

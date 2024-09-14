@@ -7,28 +7,9 @@
     {% blocktrans with name=range.name %}Products in range '{{ name }}'{% endblocktrans %} | {{ block.super }}
 {% endblock %}
 
-{% block breadcrumbs %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard:range-list' %}">{% trans "Ranges" %}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard:range-update' pk=range.id %}">'{{ range.name }}'</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-                {% trans "Products" %}
-            </li>
-        </ol>
-    </nav>
-{% endblock %}
-
-{% block headertext %}
-    {{ range.name }}: {% trans "products" %}
-{% endblock %}
-
 {% block dashboard_content %}
+
+<h1>{{ range.name }}: {% trans "products" %}</h1>
 
 <div class="tabbable dashboard">
 

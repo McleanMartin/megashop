@@ -44,7 +44,9 @@
         {% endblock %}
 
         {# Additional JS scripts #}
-        {% block extrascripts %}{% endblock %}
+        {% block extrascripts %}
+            <script src="static/js/app.js"></script>
+        {% endblock %}
 
         {# Block for body onload functions #}
         <script>

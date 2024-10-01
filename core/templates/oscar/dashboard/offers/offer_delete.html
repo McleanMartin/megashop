@@ -28,7 +28,7 @@
         <p>{% trans "Are you sure you want to delete this offer?" %}</p>
         <div class="form-actions">
             <button class="btn btn-danger" type="submit" data-loading-text="{% trans 'Deleting...' %}">{% trans "Delete" %}</button> {% trans "or" %}
-            <a class="btn btn-primary" href="{% url 'dashboard:offer-list' %}">{% trans "cancel" %}</a>
+            <a href="{% url 'dashboard:offer-list' %}">{% trans "cancel" %}</a>
         </div>
     </form>
 {% endblock dashboard_content %}

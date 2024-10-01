@@ -6,29 +6,21 @@
     {% trans "Reports" %} | {{ block.super }}
 {% endblock %}
 
-{% block breadcrumbs %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{% trans "Reporting Dashboard" %}</li>
-        </ol>
-    </nav>
-{% endblock %}
-
 {% block headertext %}
-    {% trans "Reporting dashboard" %}
+    {% trans "Reports" %}
 {% endblock %}
 
 {% block dashboard_content %}
+<div class="container-xxl flex-grow-1 container-p-y">
     <div class="table-header">
-        <h3><i class="fas fa-chart-bar"></i> {% trans "Reporting dashboard" %}</h3>
+        <h3><i class="fas fa-chart-bar"></i> {% trans "Reports" %}</h3>
     </div>
     <div class="card card-body">
         <form method="get" class="form-inline">
             {% include "oscar/dashboard/partials/form_fields_inline.html" with form=form %}
             <span class="form-group">
                 {# data-loading-text is deliberately not used here so that the button doesn't stay disabled after a CSV download has started #}
-                <button type="submit" id='generate_report' class="btn btn-primary mt-2">{% trans "Generate report" %}</button>
+                <button type="submit" id='generate_report' class="btn btn-primary mt-3">{% trans "Generate report" %}</button>
             </span>
         </form>
     </div>
@@ -41,5 +33,6 @@
 
     {% block report %}
     {% endblock %}
+</div>
 
 {% endblock dashboard_content %}

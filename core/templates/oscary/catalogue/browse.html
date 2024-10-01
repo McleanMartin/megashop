@@ -1,0 +1,97 @@
+{% extends "oscar/layout_2_col.html" %}
+
+{% load basket_tags %}
+{% load category_tags %}
+{% load product_tags %}
+{% load i18n %}
+
+{% block title %}
+    {% if summary %}{{ summary }} |{% endif %} {{ block.super }}
+{% endblock %}
+
+{% block headertext %}{{ summary }}{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb py-3 bg-light px-2">
+            <li class="breadcrumb-item"><a href="{{ homepage_url }}">{% trans "Shop" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ summary }}</li>
+        </ol>
+    </nav>
+{% endblock breadcrumbs %}
+
+{% block column_left %}
+    {% category_tree as tree_categories %}
+    {% if tree_categories %}
+        <h5 class="font-weight-bold">{% trans "Categories" %}</h5>
+        <div class="side_categories card card-body bg-light mb-4">
+            <ul class="nav flex-column">
+                {% for tree_category in tree_categories %}
+                    <li class="nav-item mt-2">
+                        <a class="nav-link {% if tree_category.pk == category.pk %}font-weight-bold{% endif %}" href="{{ tree_category.url }}">
+                            {{ tree_category.name }}
+                        </a>
+                        {% if tree_category.has_children %}
+                            <ul class="list-unstyled">
+                                {% for n in tree_category.num_to_close %}
+                                    <li><a class="nav-link " href="{{ n.url }}">{{ n.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if has_facets %}
+        <h4 class="font-weight-bold">{% trans "Refine by" %}</h4>
+        <div class="side_categories card card-body bg-light">
+            {% for field, data in facet_data.items %}
+                {% if data.results %}
+                    {% include 'oscar/search/partials/facet.html' with name=data.name items=data.results %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form method="get" class="mb-4">
+        {% for value in selected_facets %}
+            <input type="hidden" name="selected_facets" value="{{ value }}" />
+        {% endfor %}
+        <input type="hidden" name="q" value="{{ search_form.q.value|default_if_none:"" }}" />
+
+        {% if paginator.count %}
+            <div class="mb-3">
+                {% if paginator.num_pages > 1 %}
+                    <div class="float-right">
+                        {% include "oscar/partials/form_field.html" with field=form.sort_by style='horizontal' %}
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="alert alert-warning">{% trans "No results found." %}</p>
+        {% endif %}
+    </form>
+
+    {% if products %}
+        <section>
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                        {% render_product product %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% include "oscar/partials/pagination.html" %}
+        </section>
+    {% else %}
+        <p class="nonefound alert alert-info">{% trans "No products found." %}</p>
+    {% endif %}
+{% endblock content %}
+
+{% block onbodyload %}
+    {{ block.super }}
+    oscar.search.init();
+{% endblock %}

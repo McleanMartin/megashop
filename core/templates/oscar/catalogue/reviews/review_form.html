@@ -44,9 +44,9 @@
                 {% endif %}
 
 
-                <button type="submit" class="btn btn-primary" data-loading-text="{% trans 'Saving...' %}">{% trans "Save review" %}</button>
-                
-                <a class="btn btn-danger" href="{{ product.get_absolute_url }}">{% trans "cancel" %}</a>
+                <button type="submit" class="btn btn-primary btn-lg" data-loading-text="{% trans 'Saving...' %}">{% trans "Save review" %}</button>
+                {% trans "or" %}
+                <a href="{{ product.get_absolute_url }}">{% trans "cancel" %}</a>
             </fieldset>
         </form>
     </div>

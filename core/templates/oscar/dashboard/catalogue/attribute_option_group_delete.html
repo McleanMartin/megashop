@@ -56,7 +56,7 @@
                 {% blocktrans with name=object.name %}Delete Attribute Option Group <strong>{{ name }}</strong> - are you sure?{% endblocktrans %}
             </p>
             <div class="form-actions">
-                <a class="btn btn-md btn-primary" {% if not is_popup %}href="{% url 'dashboard:catalogue-attribute-option-group-list' %}"{% else %}href="#" onclick="window.close();return false;"{% endif %}>
+                <a {% if not is_popup %}href="{% url 'dashboard:catalogue-attribute-option-group-list' %}"{% else %}href="#" onclick="window.close();return false;"{% endif %}>
                     {% trans "Cancel" %}
                 </a>
                 <button type="submit" class="btn btn-danger" data-loading-text="{% trans 'Deleting...' %}">

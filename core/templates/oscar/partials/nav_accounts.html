@@ -1,80 +1,73 @@
 {% load i18n %}
-{% load currency_filters %}
-{% load category_tags %}
 
+<nav id="top_page" class="navbar navbar-expand-lg navbar-light bg-light accounts">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".account-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
 
-<!-- Navbar & Hero Start -->
-<div class="container-fluid position-relative p-0">
-    <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-        <a href="" class="navbar-brand p-0">
-            <h3 class="text-primary"><i class="me-3"></i>Mega Family Choice</h3>
-            <!-- <img src="img/logo.png" alt="Logo"> -->
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="fa fa-bars"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto py-0">
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                        <span class="dropdown-toggle">Shop</span>
-                    </a>
-                    <div class="dropdown-menu m-1">
-                        {% category_tree depth=1 as tree_categories %}
-                        <a class="dropdown-item" href="{% url 'catalogue:index' %}">{% trans "All products" %}</a>
-                        {% if tree_categories %}
-                            <div class="dropdown-divider"></div>
-                            {% for tree_category in tree_categories %}
-                                <a class="dropdown-item" href="{{ tree_category.get_absolute_url }}">{{ tree_category.name }}</a>
+        <div class="navbar-collapse account-collapse collapse">
+            {% block nav_account_languages %}
+            {% if LANGUAGES|length > 1 %}
+                <form id="language_selector" class="form-inline mb-0 mt-2 mt-lg-0" action="{% url 'set_language' %}" method="post">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ language_neutral_url_path }}" />
+                    <div class="form-group mb-0">
+                        <select name="language" class="form-control">
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE%} selected="selected"{% endif %}>
+                                    {{ language.name_local }}
+                                </option>
                             {% endfor %}
-                        {% endif %}
-
-                        {% block nav_dropdown_extra_items %}
-                            <a class="dropdown-item" href="{% url 'offer:list' %}">{% trans "Offers" %}</a>
-                        {% endblock %}
+                        </select>
                     </div>
-                </div>
-                <a href="{% url "core:about_us" %}" class="nav-item nav-link">About</a>
-                <a href="{% url "core:contact_us" %}" class="nav-item nav-link">Contact Us</a>
-            </div>
-            <div class="navbar-nav ms-auto py-2">
-                {% if user.is_authenticated %}
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                            <span class="dropdown-toggle">My Account</span>
-                        </a>
-                        <div class="dropdown-menu m-1">
-                            <a href="{% url 'customer:summary' %}" class="dropdown-item"><i class="fas fa-user-alt me-2"></i>Profile</a>
-                            {% if user.is_staff or perms.partner.dashboard_access %}
-                            <a href="{% url 'dashboard:index' %}" class="dropdown-item"><i class="fas fa-server me-2"></i>Dashboard</a>
-                            {% endif %}
-                            <a href="{% url 'customer:logout' %}" class="dropdown-item"><i class="fas fa-power-off me-2"></i> Log Out</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a href="{% url 'basket:summary' %}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0"><span class="fas fa-shopping-cart"></span> Cart</a>
-                </div>
-                {% else %}
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a href="{% url 'customer:login' %}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Signup/Signin</a>
-                </div>
+                    <button class="btn btn-outline-secondary ml-2" type="submit" data-loading-text="{% trans 'Submitting...' %}">{% trans "Go" %}</button>
+                </form>
                 {% endif %}
-            </div>
+            {% endblock %}
+            <ul class="navbar-nav ml-md-auto d-md-flex">
+                {% if user.is_authenticated %}
+                {% block nav_account_navbar_authenticated %}
+                    <li class="nav-item mr-2">
+                        {% if num_unread_notifications > 0 %}
+                            {# If user has new notifications - we change account link to go to inbox #}
+                            <a href="{% url 'customer:notifications-inbox' %}" class="nav-link mt-2 mt-lg-0">
+                                <i class="far fa-user mr-2"></i>
+                                {% trans "Account" %}
+                                <span class="badge badge-warning">{{ num_unread_notifications }}</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'customer:summary' %}" class="nav-link mt-2 mt-lg-0">
+                                <i class="far fa-user mr-2"></i>
+                                {% trans "Account" %}
+                            </a>
+                        {% endif %}
+                    </li>
+                    {% if user.is_staff or perms.partner.dashboard_access %}
+                        <li class="nav-item mr-2">
+                            <a href="{% url 'dashboard:index' %}" class="nav-link">
+                                <i class="fas fa-list-ul mr-2"></i>
+                                {% trans "Dashboard" %}
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item mr-2">
+                        <a id="logout_link" href="{% url 'customer:logout' %}" class="nav-link">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            {% trans "Logout" %}
+                        </a>
+                    </li>
+                {% endblock %}
+                {% else %}
+                    <li class="nav-item mr-2">
+                        <a id="login_link" href="{% url 'customer:login' %}" class="nav-link">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            {% trans "Login or register" %}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
-
-    <!-- Header Start -->
-<div class="container-fluid bg-breadcrumb">
-    <div class="container text-center py-5" style="max-width: 900px;">
-        {% block nav_extra %}
-            <div class="d-flex justify-content-center">
-                {% include "oscar/partials/search.html" %}
-            </div>
-        {% endblock %}
     </div>
-</div>
-<!-- Header End -->
-</div>
-<!-- Navbar & Hero End -->
+</nav>

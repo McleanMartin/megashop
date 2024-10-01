@@ -18,40 +18,50 @@
 
 {% block breadcrumbs %}
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb py-3 bg-light px-2">
+        <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ homepage_url }}">{% trans "Home" %}</a></li>
             {% with category=product.get_categories.first %}
                 {% for c in category.get_ancestors_and_self %}
                     <li class="breadcrumb-item"><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
                 {% endfor %}
                 <li class="breadcrumb-item active" aria-current="page">{{ product.get_title }}</li>
+
+                {% get_back_button as backbutton %}
+                    {% if backbutton %}
+                        <li class="ml-auto">
+                            <a href="{{ backbutton.url }}">
+                                <i class="fas fa-arrow-left"></i> {{ backbutton.title }}
+                            </a>
+                        </li>
+                    {% endif %}
             {% endwith %}
-            {% get_back_button as backbutton %}
-            {% if backbutton %}
-                <li class="ml-auto">
-                    <a href="{{ backbutton.url }}">
-                        <i class="fas fa-arrow-left"></i> {{ backbutton.title }}
-                    </a>
-                </li>
-            {% endif %}
         </ol>
     </nav>
 {% endblock %}
 
+{% block header %}
+{% endblock header %}
+
 {% block content %}
-<article class="product-page"><!-- Start of product page -->
+
+<article class="product_page"><!-- Start of product page -->
 
     <div class="row">
+
         {% block product_gallery %}
-        <div class="col-md-6">
+        <div class="col-sm-6">
             {% include "oscar/catalogue/partials/gallery.html" %}
         </div>
         {% endblock %}
 
         {% block product_main %}
-        <div class="col-md-6 product-main">
+        <div class="col-sm-6 product_main">
+            {% comment %}
+                This is a bit clunky here.  Better to have some kind of JS-driven dashboard menu that
+                pops out when clicked.  A bit like the Django-Debug-Toolbar button
+            {% endcomment %}
             {% if user.is_staff %}
-                <a class="float-end d-none d-md-block" href="{% url 'dashboard:catalogue-product' pk=product.id %}">
+                <a class="float-right d-none d-md-block" href="{% url 'dashboard:catalogue-product' pk=product.id %}">
                     <small><i class="fas fa-pencil-alt"></i> {% trans "Edit this product" %}</small>
                 </a>
             {% endif %}
@@ -64,6 +74,7 @@
             {% iffeature "reviews" %}
                 {% include "oscar/catalogue/reviews/partials/review_stars.html" %}
             {% endiffeature %}
+
             <hr/>
 
             {% if not product.is_parent %}
@@ -81,8 +92,9 @@
                     {% endfor %}
                 {% endblock %}
             {% endif %}
-        </div><!-- /col-md-6 -->
+        </div><!-- /col-sm-6 -->
         {% endblock %}
+
     </div><!-- /row -->
 
     {% block product_description %}
@@ -146,7 +158,7 @@
         <section>
             <div id="reviews" class="sub-header">
                 {% if product.num_approved_reviews > 3 %}
-                    <a href="{% url 'catalogue:reviews-list' product_slug=product.slug product_pk=product.id %}" class="btn float-end">{% trans "See all reviews" %}</a>
+                    <a href="{% url 'catalogue:reviews-list' product_slug=product.slug product_pk=product.id %}" class="btn float-right">{% trans "See all reviews" %}</a>
                 {% endif %}
                 <h2>{% trans "Customer Reviews" %}</h2>
             </div>
@@ -181,10 +193,10 @@
                 <h2>{% trans "Recommended items" %}</h2>
             </div>
             <ul class="row list-unstyled mx-0">
-                {% for recommended_product in recommended_products %}
-                    <li class="col-sm-6 col-md-4 col-lg-3">
-                        {% render_product recommended_product %}
-                    </li>
+                {% for product in recommended_products %}
+                <li class="col-sm-4 col-md-3 col-lg-3">
+                    {% render_product product %}
+                </li>
                 {% endfor %}
             </ul>
         {% endif %}

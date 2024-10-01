@@ -100,9 +100,10 @@
             <div class="fixed-actions-group">
                 <div class="form-group">
                     <div class="float-right">
-                        <a class="btn btn-danger" href="{% url 'dashboard:catalogue-category-list' %}">
+                        <a href="{% url 'dashboard:catalogue-category-list' %}">
                             {% trans "Cancel" %}
                         </a>
+                        {% trans "or" %}
                         <button class="btn btn-secondary" name="action" type="submit" value="continue" data-loading-text="{% trans 'Saving...' %}">
                             {% trans "Save and continue editing" %}
                         </button>

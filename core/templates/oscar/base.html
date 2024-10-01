@@ -11,7 +11,7 @@
         <meta name="viewport" content="{% block viewport %}width=device-width{% endblock %}" />
 
         {% block favicon %}
-            <link rel="shortcut icon" href="{% static "oscar/favicon.png" %}" />
+            <link rel="shortcut icon" href="{% static "oscar/favicon.ico" %}" />
         {% endblock %}
 
         {# Block where global CSS will go. #}
@@ -44,9 +44,7 @@
         {% endblock %}
 
         {# Additional JS scripts #}
-        {% block extrascripts %}
-            <script src="static/js/app.js"></script>
-        {% endblock %}
+        {% block extrascripts %}{% endblock %}
 
         {# Block for body onload functions #}
         <script>

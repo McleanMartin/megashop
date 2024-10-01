@@ -6,17 +6,29 @@
     {% trans "Partners" %} | {{ block.super }}
 {% endblock %}
 
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Partners" %}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block header %}
+    <div class="page-header">
+        <a href="{% url 'dashboard:partner-create' %}" class="btn btn-primary float-right"><i class="fas fa-plus-circle"></i> {% trans "Create new partner" %}</a>
+        <h1>{% trans "Partners" %}</h1>
+    </div>
+{% endblock header %}
 
 {% block dashboard_content %}
-    <h1>{% trans "Partners" %}</h1>
     <div class="card card-body bg-light">
-        <a href="{% url 'dashboard:partner-create' %}" class="mt-2 mb-1 btn btn-primary col-md-3"><i data-feather="plus"></i> {% trans "Create new partner" %}</a>
         <form method="get" class="form-inline">
             {% include 'oscar/dashboard/partials/form_fields_inline.html' with form=form %}
-            
-            <button type="submit" class="btn btn-primary mt-2" data-loading-text="{% trans 'Searching...' %}">{% trans "Search" %}</button>
+            <button type="submit" class="btn btn-primary" data-loading-text="{% trans 'Searching...' %}">{% trans "Search" %}</button>
             {% if is_filtered %}
-                <a class="btn btn-secondary mt-2" href="{% url 'dashboard:partner-list' %}" >{% trans "Reset" %}</a>
+                <a class="btn btn-secondary" href="{% url 'dashboard:partner-list' %}" >{% trans "Reset" %}</a>
             {% endif %}
         </form>
     </div>
